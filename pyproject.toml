@@ -1,0 +1,15 @@
+[project]
+name = "viewers-leaderboard-backend"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "Lucas Limeira", email = "lucasalveslm@gmail.com"},
+]
+dependencies = ["fastapi>=0.115.6", "uvicorn>=0.32.1"]
+requires-python = "==3.11.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false
