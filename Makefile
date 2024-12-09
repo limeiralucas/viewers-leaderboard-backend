@@ -1,7 +1,7 @@
 setup:
 	pdm install
 dev:
-	pdm run uvicorn src.viewers_leaderboard_backend.main:app --reload
+	pdm run uvicorn src.viewers_leaderboard.main:app --reload
 test:
 	pdm run pytest
 format:
