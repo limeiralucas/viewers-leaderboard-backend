@@ -1,6 +1,6 @@
 from typing import Optional
 from dataclasses import dataclass
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field
 
 
 @dataclass
@@ -17,7 +17,5 @@ class WebhookSubscription:
 
 
 class WebhookPayload(BaseModel):
-    model_config = ConfigDict(extra="allow")
-
     subscription: WebhookSubscription
     event: dict[str, str] = Field(default_factory=dict)
