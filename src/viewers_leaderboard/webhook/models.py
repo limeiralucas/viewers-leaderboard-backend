@@ -2,6 +2,7 @@ from typing import Optional
 from dataclasses import dataclass
 from pydantic import BaseModel, Field, ConfigDict
 
+
 @dataclass
 class WebhookSubscription:
     id: str
@@ -13,6 +14,7 @@ class WebhookSubscription:
     created_at: str
     transport: dict[str, str] = Field(default_factory=dict)
     challenge: Optional[str] = None
+
 
 class WebhookPayload(BaseModel):
     model_config = ConfigDict(extra="allow")

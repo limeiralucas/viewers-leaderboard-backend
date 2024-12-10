@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 from polyfactory.factories.pydantic_factory import ModelFactory
 from polyfactory.pytest_plugin import register_fixture
 from src.viewers_leaderboard.main import app
-from src.viewers_leaderboard.models import WebhookPayload
+from src.viewers_leaderboard.webhook.models import WebhookPayload
 
 client = TestClient(app)
 
@@ -10,7 +10,9 @@ client = TestClient(app)
 class WebhookPayloadFactory(ModelFactory[WebhookPayload]): ...
 
 def test_webhook_endpoint_should_answer_challenge(webhook_payload_factory: WebhookPayloadFactory):
-    payload: WebhookPayload = webhook_payload_factory.build(subscription = {"challenge": "test-challenge"})
+    payload: WebhookPayload = webhook_payload_factory.build(
+        subscription = {"challenge": "test-challenge"}
+    )
 
     response = client.post(
         "/webhook",
