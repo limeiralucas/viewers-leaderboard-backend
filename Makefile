@@ -6,3 +6,4 @@ test:
 	pdm run pytest
 format:
 	pdm run black ./src
+	pdm run black ./tests
