@@ -4,7 +4,7 @@ from beanie.odm.documents import DocumentWithSoftDelete
 from polyfactory.pytest_plugin import register_fixture
 from polyfactory.factories.pydantic_factory import ModelFactory
 from src.viewers_leaderboard.config import Config
-from src.viewers_leaderboard.database import setup_database_connection
+from src.viewers_leaderboard.database import setup_database_connection, shutdown_database_connection
 
 
 @register_fixture
@@ -36,6 +36,8 @@ async def test_setup_database_connection_should_create_client_and_init_beanie(
         document_models=ANY,
     )
 
+    assert app.db_client == motor_client_mock()
+
 
 @patch("src.viewers_leaderboard.database.AsyncIOMotorClient", new_callable=MagicMock)
 @patch("src.viewers_leaderboard.database.init_beanie", new_callable=AsyncMock)
@@ -56,3 +58,10 @@ async def test_setup_database_connection_should_init_all_document_models(
         database=ANY,
         document_models=user_defined_document_models,
     )
+
+async def test_shutdown_database_connection_closes_db_connection():
+    app = MagicMock()
+
+    await shutdown_database_connection(app)
+
+    app.db_client.close.assert_called_once()
