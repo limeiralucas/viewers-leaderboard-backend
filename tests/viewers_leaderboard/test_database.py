@@ -6,15 +6,17 @@ from polyfactory.factories.pydantic_factory import ModelFactory
 from src.viewers_leaderboard.config import Config
 from src.viewers_leaderboard.database import setup_database_connection
 
+
 @register_fixture
 class SettingsMock(ModelFactory[Config]): ...
+
 
 @patch("src.viewers_leaderboard.database.AsyncIOMotorClient", new_callable=MagicMock)
 @patch("src.viewers_leaderboard.database.init_beanie", new_callable=AsyncMock)
 async def test_setup_database_connection_should_create_client_and_init_beanie(
     init_beanie_mock: AsyncMock,
     motor_client_mock: MagicMock,
-    settings_mock: SettingsMock
+    settings_mock: SettingsMock,
 ):
     settings: Config = settings_mock.build()
     app = MagicMock()
@@ -33,6 +35,7 @@ async def test_setup_database_connection_should_create_client_and_init_beanie(
         database=db_mock,
         document_models=ANY,
     )
+
 
 @patch("src.viewers_leaderboard.database.AsyncIOMotorClient", new_callable=MagicMock)
 @patch("src.viewers_leaderboard.database.init_beanie", new_callable=AsyncMock)
@@ -53,4 +56,3 @@ async def test_setup_database_connection_should_init_all_document_models(
         database=ANY,
         document_models=user_defined_document_models,
     )
-    
