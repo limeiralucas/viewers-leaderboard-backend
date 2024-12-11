@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:38568ff72040fb15431966c5f83fa1bfdf5d1e42b5017bd9057aed7e03c60c92"
+content_hash = "sha256:ac483a2e80fff9da8afc39f899eb191ad07dc8cecd62a9d02503c4a5841bb3d1"
 
 [[metadata.targets]]
 requires_python = "==3.11.*"
@@ -639,6 +639,21 @@ dependencies = [
 files = [
     {file = "pytest_asyncio-0.24.0-py3-none-any.whl", hash = "sha256:a811296ed596b69bf0b6f3dc40f83bcaf341b155a269052d82efa2b25ac7037b"},
     {file = "pytest_asyncio-0.24.0.tar.gz", hash = "sha256:d081d828e576d85f875399194281e92bf8a68d60d72d1a2faf2feddb6c46b276"},
+]
+
+[[package]]
+name = "pytest-env"
+version = "1.1.5"
+requires_python = ">=3.8"
+summary = "pytest plugin that allows you to add environment variables."
+groups = ["dev"]
+dependencies = [
+    "pytest>=8.3.3",
+    "tomli>=2.0.1; python_version < \"3.11\"",
+]
+files = [
+    {file = "pytest_env-1.1.5-py3-none-any.whl", hash = "sha256:ce90cf8772878515c24b31cd97c7fa1f4481cd68d588419fd45f10ecaee6bc30"},
+    {file = "pytest_env-1.1.5.tar.gz", hash = "sha256:91209840aa0e43385073ac464a554ad2947cc2fd663a9debf88d03b01e0cc1cf"},
 ]
 
 [[package]]
