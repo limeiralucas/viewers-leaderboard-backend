@@ -2,19 +2,19 @@ from fastapi.testclient import TestClient
 from polyfactory.factories.pydantic_factory import ModelFactory
 from polyfactory.pytest_plugin import register_fixture
 from src.viewers_leaderboard.main import app
-from src.viewers_leaderboard.webhook.models import WebhookPayload
+from src.viewers_leaderboard.webhook.transport import ChallengePayload
 
 client = TestClient(app)
 
 
 @register_fixture
-class WebhookPayloadFactory(ModelFactory[WebhookPayload]): ...
+class ChallengePayloadFactory(ModelFactory[ChallengePayload]): ...
 
 
 def test_webhook_endpoint_should_answer_challenge(
-    webhook_payload_factory: WebhookPayloadFactory,
+    challenge_payload_factory: ChallengePayloadFactory,
 ):
-    payload: WebhookPayload = webhook_payload_factory.build(challenge="test-challenge")
+    payload: ChallengePayload = challenge_payload_factory.build()
 
     response = client.post(
         "/webhook",
