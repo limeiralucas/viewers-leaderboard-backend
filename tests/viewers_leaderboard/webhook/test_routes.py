@@ -14,9 +14,7 @@ class WebhookPayloadFactory(ModelFactory[WebhookPayload]): ...
 def test_webhook_endpoint_should_answer_challenge(
     webhook_payload_factory: WebhookPayloadFactory,
 ):
-    payload: WebhookPayload = webhook_payload_factory.build(
-        subscription={"challenge": "test-challenge"}
-    )
+    payload: WebhookPayload = webhook_payload_factory.build(challenge="test-challenge")
 
     response = client.post(
         "/webhook",
@@ -26,7 +24,7 @@ def test_webhook_endpoint_should_answer_challenge(
 
     assert response.status_code == 200
     assert response.headers.get("content-type") == "text/plain; charset=utf-8"
-    assert response.text == payload.subscription.challenge
+    assert response.text == payload.challenge
 
 
 def test_webhook_endpoint_returns_200(webhook_payload_factory: WebhookPayloadFactory):

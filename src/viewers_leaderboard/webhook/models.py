@@ -1,6 +1,15 @@
 from typing import Optional
 from dataclasses import dataclass
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
+
+
+@dataclass
+class WebhookEvent:
+    model_config = ConfigDict(extra="ignore")
+
+    broadcaster_user_id: str
+    chatter_user_id: str
+    chatter_user_name: str
 
 
 @dataclass
@@ -13,9 +22,9 @@ class WebhookSubscription:
     condition: dict[str, str]
     created_at: str
     transport: dict[str, str] = Field(default_factory=dict)
-    challenge: Optional[str] = None
 
 
 class WebhookPayload(BaseModel):
     subscription: WebhookSubscription
-    event: dict[str, str] = Field(default_factory=dict)
+    challenge: Optional[str] = None
+    event: WebhookEvent = Field(default_factory=dict)
