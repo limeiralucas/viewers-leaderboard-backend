@@ -1,7 +1,8 @@
 from fastapi import FastAPI
+from src.viewers_leaderboard.lifespan import app_lifespan
 import src.viewers_leaderboard.webhook.routes as webhook_routes
 
-app = FastAPI()
+app = FastAPI(lifespan=app_lifespan)
 
 
 @app.get("/")
