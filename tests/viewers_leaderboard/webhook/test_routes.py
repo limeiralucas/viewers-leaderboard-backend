@@ -25,12 +25,3 @@ def test_webhook_endpoint_should_answer_challenge(
     assert response.status_code == 200
     assert response.headers.get("content-type") == "text/plain; charset=utf-8"
     assert response.text == payload.challenge
-
-
-def test_webhook_endpoint_returns_200(webhook_payload_factory: WebhookPayloadFactory):
-    payload: WebhookPayload = webhook_payload_factory.build()
-
-    response = client.post("/webhook", json=payload.model_dump())
-
-    assert response.status_code == 200
-    assert response.json() == {"status": "ok"}

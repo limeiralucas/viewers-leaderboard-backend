@@ -26,5 +26,5 @@ class WebhookSubscription:
 
 class WebhookPayload(BaseModel):
     subscription: WebhookSubscription
+    event: WebhookEvent
     challenge: Optional[str] = None
-    event: WebhookEvent = Field(default_factory=dict)
