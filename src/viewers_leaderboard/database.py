@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 from src.viewers_leaderboard.log import logger
-from src.viewers_leaderboard.config import get_settings
+from src.viewers_leaderboard.settings import get_settings
 
 from src.viewers_leaderboard.ranking.models import Score, Stream
 

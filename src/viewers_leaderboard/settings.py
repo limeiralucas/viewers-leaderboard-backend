@@ -2,7 +2,7 @@ from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class Config(BaseSettings):
+class Settings(BaseSettings):
     app_name: str = "Viewers Leaderboard Backend"
     client_id: str
     client_secret: str
@@ -13,5 +13,5 @@ class Config(BaseSettings):
 
 
 @lru_cache
-def get_settings() -> Config:
-    return Config()
+def get_settings():
+    return Settings()
