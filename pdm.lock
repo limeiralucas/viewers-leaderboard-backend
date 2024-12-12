@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:ac483a2e80fff9da8afc39f899eb191ad07dc8cecd62a9d02503c4a5841bb3d1"
+content_hash = "sha256:088011ed769025ed7b81ea9bebf82fb0f148ea8b27b221de6bf798af2f25b255"
 
 [[metadata.targets]]
 requires_python = "==3.11.*"
@@ -389,6 +389,35 @@ files = [
 ]
 
 [[package]]
+name = "mongomock"
+version = "4.3.0"
+summary = "Fake pymongo stub for testing simple MongoDB-dependent code"
+groups = ["dev"]
+dependencies = [
+    "packaging",
+    "pytz",
+    "sentinels",
+]
+files = [
+    {file = "mongomock-4.3.0-py2.py3-none-any.whl", hash = "sha256:5ef86bd12fc8806c6e7af32f21266c61b6c4ba96096f85129852d1c4fec1327e"},
+    {file = "mongomock-4.3.0.tar.gz", hash = "sha256:32667b79066fabc12d4f17f16a8fd7361b5f4435208b3ba32c226e52212a8c30"},
+]
+
+[[package]]
+name = "mongomock-motor"
+version = "0.0.34"
+requires_python = "<4.0,>=3.8"
+summary = "Library for mocking AsyncIOMotorClient built on top of mongomock."
+groups = ["dev"]
+dependencies = [
+    "mongomock<5.0.0,>=4.1.2",
+]
+files = [
+    {file = "mongomock_motor-0.0.34-py3-none-any.whl", hash = "sha256:f14b131cbbaae26104c4e5c3e7d70452ab743b284fd52fc10fac668e9c6b0575"},
+    {file = "mongomock_motor-0.0.34.tar.gz", hash = "sha256:c8141ff9bf41ca19b87a935855013018a726ac3d2fbd74a14bbc71ce34a532d0"},
+]
+
+[[package]]
 name = "motor"
 version = "3.6.0"
 requires_python = ">=3.8"
@@ -679,6 +708,25 @@ groups = ["default"]
 files = [
     {file = "python-dotenv-1.0.1.tar.gz", hash = "sha256:e324ee90a023d808f1959c46bcbc04446a10ced277783dc6ee09987c37ec10ca"},
     {file = "python_dotenv-1.0.1-py3-none-any.whl", hash = "sha256:f7b63ef50f1b690dddf550d03497b66d609393b40b564ed0d674909a68ebf16a"},
+]
+
+[[package]]
+name = "pytz"
+version = "2024.2"
+summary = "World timezone definitions, modern and historical"
+groups = ["dev"]
+files = [
+    {file = "pytz-2024.2-py2.py3-none-any.whl", hash = "sha256:31c7c1817eb7fae7ca4b8c7ee50c72f93aa2dd863de768e1ef4245d426aa0725"},
+    {file = "pytz-2024.2.tar.gz", hash = "sha256:2aa355083c50a0f93fa581709deac0c9ad65cca8a9e9beac660adcbd493c798a"},
+]
+
+[[package]]
+name = "sentinels"
+version = "1.0.0"
+summary = "Various objects to denote special meanings in python"
+groups = ["dev"]
+files = [
+    {file = "sentinels-1.0.0.tar.gz", hash = "sha256:7be0704d7fe1925e397e92d18669ace2f619c92b5d4eb21a89f31e026f9ff4b1"},
 ]
 
 [[package]]

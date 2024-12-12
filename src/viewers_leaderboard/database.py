@@ -4,7 +4,7 @@ from beanie import init_beanie
 from src.viewers_leaderboard.log import logger
 from src.viewers_leaderboard.settings import get_settings
 
-from src.viewers_leaderboard.ranking.models import Score, Stream
+from src.viewers_leaderboard.ranking.models import Score
 
 
 async def setup_database_connection(app: FastAPI):
@@ -18,7 +18,6 @@ async def setup_database_connection(app: FastAPI):
         database=app.db_client[settings.mongo_db_name],
         document_models=[
             Score,
-            Stream,
         ],
     )
 

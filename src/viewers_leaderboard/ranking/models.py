@@ -1,24 +1,18 @@
 from enum import Enum
-from typing import Optional
-from datetime import datetime
-from beanie import Document, Link
-from pydantic import Field
+from beanie import Document
+from src.viewers_leaderboard.mixins import TimestampMixin
 
 
-class Stream(Document):
-    broadcaster_id: str
-    started_at: datetime = Field(default_factory=datetime.now)
-    ended_at: Optional[datetime] = None
+class ScoreType(Enum):
+    CHAT = "chat"
+    VIEW = "view"
 
 
-class ScoreOrigin(Enum):
-    view = "view"
-    chat = "chat"
-
-
-class Score(Document):
-    stream: Link[Stream]
-    user_id: str
-    origin: ScoreOrigin
-    value: int
-    created_at: datetime = Field(default_factory=datetime.now)
+class Score(Document, TimestampMixin):
+    viewer_user_id: str
+    viewer_username: str
+    broadcaster_user_id: str
+    broadcaster_username: str
+    type: ScoreType
+    last_stream_hash: str
+    value: int = 0

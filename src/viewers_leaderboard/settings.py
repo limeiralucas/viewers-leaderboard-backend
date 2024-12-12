@@ -2,9 +2,11 @@ from os import getenv
 from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 def get_env_filename():
     env = getenv("ENV")
     return f".env.${env.lower()}" if env else ".env"
+
 
 class Settings(BaseSettings):
     app_name: str = "Viewers Leaderboard Backend"
