@@ -7,6 +7,7 @@ from src.viewers_leaderboard.webhook.transport import (
     ChatMessageEvent,
 )
 from src.viewers_leaderboard.ranking.models import Score, ScoreType
+from src.viewers_leaderboard.twitch.stream import fetch_current_broadcaster_stream
 
 router = APIRouter()
 
@@ -26,6 +27,11 @@ async def handle_chat_message_event(event: ChatMessageEvent):
     broadcaster_user_id = event.broadcaster_user_id
     viewer_username = event.chatter_user_name
     viewer_user_id = event.chatter_user_id
+
+    current_stream = await fetch_current_broadcaster_stream(broadcaster_username)
+
+    if current_stream is None:
+        return
 
     score = await Score.find_one(
         Score.viewer_user_id == viewer_user_id,

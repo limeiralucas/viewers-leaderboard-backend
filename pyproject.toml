@@ -19,8 +19,9 @@ asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 env = [
     "ENV=test",
-    "CLIENT_ID=test-client-id",
-    "CLIENT_SECRET=test-client-secret",
+    "APP_CLIENT_ID=test-client-id",
+    "APP_CLIENT_SECRET=test-client-secret",
+    "APP_ACCESS_TOKEN=test-app-access-token",
     "MONGO_CONN_STR=test",
     "MONGO_DB_NAME=test"
 ]

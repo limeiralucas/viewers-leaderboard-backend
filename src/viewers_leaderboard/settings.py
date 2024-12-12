@@ -11,8 +11,9 @@ def get_env_filename():
 class Settings(BaseSettings):
     app_name: str = "Viewers Leaderboard Backend"
     env: str = "dev"
-    client_id: str
-    client_secret: str
+    app_client_id: str
+    app_client_secret: str
+    app_access_token: str
     mongo_conn_str: str
     mongo_db_name: str
 
