@@ -1,5 +1,7 @@
+from datetime import datetime
 from unittest.mock import patch, AsyncMock
 import pytest
+from freezegun import freeze_time
 from twitchio.models import Stream
 from fastapi.testclient import TestClient
 from polyfactory.factories.pydantic_factory import ModelFactory
@@ -24,27 +26,6 @@ class ChallengePayloadFactory(ModelFactory[ChallengePayload]): ...
 
 @register_fixture
 class ChatMessagePayloadFactory(ModelFactory[ChatMessagePayload]): ...
-
-
-@pytest.fixture
-def stream_mock():
-    data = {
-        "id": "12345",
-        "user_id": "123",
-        "user_name": "test_user",
-        "game_id": "123",
-        "game_name": "Test Game",
-        "type": "live",
-        "title": "Test Stream",
-        "viewer_count": 100,
-        "started_at": "2023-01-01T00:00:00Z",
-        "language": "en",
-        "thumbnail_url": "http://example.com/thumbnail.jpg",
-        "tags": ["tag1", "tag2"],
-        "tag_ids": ["123", "123"],
-        "is_mature": False,
-    }
-    yield Stream(http="TwitchHTTP", data=data)
 
 
 def test_webhook_endpoint_should_answer_challenge(
@@ -90,22 +71,33 @@ async def test_webhook_should_create_score_for_chat_if_doesnt_exist(
     assert score.value == 1
 
 
-async def test_webhook_should_increment_score_for_chat(
+@pytest.mark.parametrize("elapsed_seconds,expected_score", [(300, 2), (2, 1)])
+async def test_webhook_should_increment_score_for_chat_with_5_min_between_msgs(
+    elapsed_seconds: int,
+    expected_score: int,
     chat_message_payload_factory: ChatMessagePayloadFactory,
     stream_mock: Stream,
     test_client: TestClient,
 ):
+    def receive_score():
+        return test_client.post(
+            "/webhook",
+            json=payload.model_dump(),
+        )
+
     payload: ChatMessagePayload = chat_message_payload_factory.build()
 
     with patch(
         "src.viewers_leaderboard.webhook.routes.fetch_current_broadcaster_stream",
         return_value=stream_mock,
     ):
-        for _ in range(2):
-            response = test_client.post(
-                "/webhook",
-                json=payload.model_dump(),
-            )
+
+        with freeze_time(datetime.now(), auto_tick_seconds=elapsed_seconds):
+            # First message 5 minutes ago
+            receive_score()
+
+            # Second message now
+            response = receive_score()
 
     score = await Score.find_one()
 
@@ -114,7 +106,7 @@ async def test_webhook_should_increment_score_for_chat(
     assert score.viewer_username == payload.event.chatter_user_name
     assert score.broadcaster_user_id == payload.event.broadcaster_user_id
     assert score.broadcaster_username == payload.event.broadcaster_user_name
-    assert score.value == 2
+    assert score.value == expected_score
 
 
 @patch(

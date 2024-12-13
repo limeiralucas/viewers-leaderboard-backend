@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import APIRouter
 from fastapi.responses import PlainTextResponse
 from src.viewers_leaderboard.webhook.transport import (
@@ -7,7 +8,10 @@ from src.viewers_leaderboard.webhook.transport import (
     ChatMessageEvent,
 )
 from src.viewers_leaderboard.ranking.models import Score, ScoreType
-from src.viewers_leaderboard.twitch.stream import fetch_current_broadcaster_stream
+from src.viewers_leaderboard.twitch.stream import (
+    fetch_current_broadcaster_stream,
+    gen_stream_hash,
+)
 
 router = APIRouter()
 
@@ -33,10 +37,13 @@ async def handle_chat_message_event(event: ChatMessageEvent):
     if current_stream is None:
         return
 
+    stream_hash = gen_stream_hash(current_stream)
+
     score = await Score.find_one(
         Score.viewer_user_id == viewer_user_id,
         Score.broadcaster_user_id == broadcaster_user_id,
         Score.type == ScoreType.CHAT,
+        Score.last_stream_hash == stream_hash,
     )
 
     if score is None:
@@ -46,8 +53,15 @@ async def handle_chat_message_event(event: ChatMessageEvent):
             broadcaster_username=broadcaster_username,
             broadcaster_user_id=broadcaster_user_id,
             type=ScoreType.CHAT,
-            last_stream_hash="test-hash",
+            last_stream_hash=stream_hash,
             value=1,
         ).save()
-    else:
+    elif should_score(score):
         await score.inc({Score.value: 1})
+
+
+def should_score(score: Score):
+    now = datetime.now()
+
+    # 5 minutes elapsed
+    return (now - score.updated_at).total_seconds() >= 300
