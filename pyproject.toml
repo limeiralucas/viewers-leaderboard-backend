@@ -22,6 +22,7 @@ env = [
     "APP_CLIENT_ID=test-client-id",
     "APP_CLIENT_SECRET=test-client-secret",
     "APP_ACCESS_TOKEN=test-app-access-token",
+    "WEBHOOK_SECRET=test-webhook-secret",
     "MONGO_CONN_STR=test",
     "MONGO_DB_NAME=test"
 ]

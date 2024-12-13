@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     app_client_id: str
     app_client_secret: str
     app_access_token: str
+    webhook_secret: str
     mongo_conn_str: str
     mongo_db_name: str
 
