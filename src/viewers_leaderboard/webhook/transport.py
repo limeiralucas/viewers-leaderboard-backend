@@ -1,3 +1,4 @@
+from typing import Optional
 from datetime import datetime
 from typing import Union, Literal, Annotated
 from pydantic import BaseModel
@@ -41,13 +42,13 @@ def parse_active_stream_override_header(
         Header(description="Dev-only override for current stream data broadcaster_id"),
     ] = None,
     active_stream_started_at_override: Annotated[
-        datetime | None,
+        str | None,
         Header(
             description="Dev-only override for current stream data started_at",
             example="2024-12-14T16:45:30",
         ),
     ] = None,
-) -> TwitchStream:
+) -> TwitchStream | None:
     if all([active_stream_broadcaster_id_override, active_stream_started_at_override]):
         return TwitchStream(
             broadcaster_id=active_stream_broadcaster_id_override,

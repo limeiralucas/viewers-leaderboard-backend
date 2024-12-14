@@ -1,4 +1,3 @@
-from json import loads
 from datetime import datetime
 from pydantic import BaseModel
 from twitchio.models import Stream
