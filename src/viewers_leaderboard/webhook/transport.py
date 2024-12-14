@@ -1,5 +1,8 @@
-from typing import Union, Literal
+from datetime import datetime
+from typing import Union, Literal, Annotated
 from pydantic import BaseModel
+from fastapi import Header
+from src.viewers_leaderboard.twitch.models import TwitchStream
 
 
 class WebhookSubscription(BaseModel):
@@ -30,3 +33,24 @@ class ChallengePayload(BaseWebhookPayload):
 
 
 WebhookPayload = Union[ChatMessagePayload, ChallengePayload]
+
+
+def parse_active_stream_override_header(
+    active_stream_broadcaster_id_override: Annotated[
+        str | None,
+        Header(description="Dev-only override for current stream data broadcaster_id"),
+    ] = None,
+    active_stream_started_at_override: Annotated[
+        datetime | None,
+        Header(
+            description="Dev-only override for current stream data started_at",
+            example="2024-12-14T16:45:30",
+        ),
+    ] = None,
+) -> TwitchStream:
+    if all([active_stream_broadcaster_id_override, active_stream_started_at_override]):
+        return TwitchStream(
+            broadcaster_id=active_stream_broadcaster_id_override,
+            started_at=active_stream_started_at_override,
+        )
+    return None
