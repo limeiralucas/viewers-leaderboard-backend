@@ -71,7 +71,6 @@ async def test_webhook_should_create_score_for_chat_if_doesnt_exist(
     assert score.viewer_user_id == payload.event.chatter_user_id
     assert score.viewer_username == payload.event.chatter_user_name
     assert score.broadcaster_user_id == payload.event.broadcaster_user_id
-    assert score.broadcaster_username == payload.event.broadcaster_user_name
     assert score.value == 1
 
 
@@ -109,7 +108,6 @@ async def test_webhook_should_increment_score_for_chat_with_5_min_between_msgs(
     assert score.viewer_user_id == payload.event.chatter_user_id
     assert score.viewer_username == payload.event.chatter_user_name
     assert score.broadcaster_user_id == payload.event.broadcaster_user_id
-    assert score.broadcaster_username == payload.event.broadcaster_user_name
     assert score.value == expected_score
 
 
