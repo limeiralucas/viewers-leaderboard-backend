@@ -16,10 +16,10 @@ async def test_fetch_current_broadcaster_stream_should_return_active_stream(
     client.fetch_streams = AsyncMock(return_value=[stream_mock])
     mock_get_twitch_client.return_value = client
 
-    result = await fetch_current_broadcaster_stream("test_user")
+    result = await fetch_current_broadcaster_stream("test_user_id")
 
     assert result == stream_mock
-    client.fetch_streams.assert_awaited_with(user_logins=["test_user"])
+    client.fetch_streams.assert_awaited_with(user_ids=["test_user_id"])
 
 
 def test_gen_stream_hash_should_return_hash(stream_mock: Stream):

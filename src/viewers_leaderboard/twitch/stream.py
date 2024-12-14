@@ -3,9 +3,9 @@ from twitchio.models import Stream
 from src.viewers_leaderboard.twitch.client import get_twitch_client
 
 
-async def fetch_current_broadcaster_stream(broadcaster_username: str):
+async def fetch_current_broadcaster_stream(broadcaster_id: str):
     client = get_twitch_client()
-    streams = await client.fetch_streams(user_logins=[broadcaster_username])
+    streams = await client.fetch_streams(user_ids=[broadcaster_id])
 
     if len(streams) == 1:
         return streams[0]

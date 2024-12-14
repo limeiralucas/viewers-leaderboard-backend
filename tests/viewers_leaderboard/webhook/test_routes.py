@@ -3,6 +3,7 @@ from unittest.mock import patch, AsyncMock
 import pytest
 from freezegun import freeze_time
 from twitchio.models import Stream
+from fastapi import HTTPException
 from fastapi.testclient import TestClient
 from polyfactory.factories.pydantic_factory import ModelFactory
 from polyfactory.pytest_plugin import register_fixture
@@ -12,12 +13,15 @@ from src.viewers_leaderboard.webhook.transport import (
     ChatMessagePayload,
 )
 from src.viewers_leaderboard.ranking.models import Score
+from src.viewers_leaderboard.twitch.auth import validate_webhook_request
 
 
 @pytest.fixture
 def test_client():
     with TestClient(app) as client:
+        app.dependency_overrides[validate_webhook_request] = lambda: True
         yield client
+        app.dependency_overrides = {}
 
 
 @register_fixture
@@ -128,7 +132,31 @@ async def test_webhook_should_ignore_chat_message_if_stream_is_offline(
     score = await Score.find_one()
 
     fetch_current_broadcaster_stream_mock.assert_awaited_once_with(
-        payload.event.broadcaster_user_name
+        payload.event.broadcaster_user_id
     )
     assert response.status_code == 200
     assert score is None
+
+@patch(
+    "src.viewers_leaderboard.webhook.routes.fetch_current_broadcaster_stream",
+    return_value=None,
+)
+async def test_webhook_should_raise_http_error_403_if_validation_fails(
+    fetch_current_broadcaster_stream_mock: AsyncMock,
+    chat_message_payload_factory: ChatMessagePayloadFactory,
+    test_client: TestClient,
+):
+    payload: ChatMessagePayload = chat_message_payload_factory.build()
+
+    async def raise_403():
+        raise HTTPException(status_code=403, detail="Invalid signature")
+
+    test_client.app.dependency_overrides[validate_webhook_request] = raise_403
+
+    response = test_client.post(
+        "/webhook",
+        json=payload.model_dump(),
+    )
+
+    assert response.status_code == 403
+    fetch_current_broadcaster_stream_mock.assert_not_awaited()
