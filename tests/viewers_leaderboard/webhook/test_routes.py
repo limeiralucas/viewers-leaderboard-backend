@@ -15,6 +15,7 @@ from src.viewers_leaderboard.webhook.transport import (
 from src.viewers_leaderboard.ranking.models import Score
 from src.viewers_leaderboard.twitch.models import TwitchStream
 from src.viewers_leaderboard.twitch.auth import validate_webhook_request
+from src.viewers_leaderboard.settings import Settings
 
 
 @pytest.fixture
@@ -35,6 +36,10 @@ class ChatMessagePayloadFactory(ModelFactory[ChatMessagePayload]): ...
 
 @register_fixture
 class TwitchStreamFactory(ModelFactory[TwitchStream]): ...
+
+
+@register_fixture
+class SettingsFactory(ModelFactory[Settings]): ...
 
 
 def test_webhook_endpoint_should_answer_challenge(
@@ -166,3 +171,40 @@ async def test_webhook_should_raise_http_error_403_if_validation_fails(
 
     assert response.status_code == 403
     fetch_current_broadcaster_stream_mock.assert_not_awaited()
+
+
+@patch(
+    "src.viewers_leaderboard.webhook.routes.fetch_current_broadcaster_stream",
+    new_callable=AsyncMock,
+)
+async def test_webhook_should_use_active_stream_overrides_if_provided_and_env_is_dev(
+    fetch_current_broadcaster_stream_mock: AsyncMock,
+    chat_message_payload_factory: ChatMessagePayloadFactory,
+    settings_factory: SettingsFactory,
+    test_client: TestClient,
+):
+    settings = settings_factory.build(env="dev")
+    payload: ChatMessagePayload = chat_message_payload_factory.build()
+    headers = {
+        "active-stream-broadcaster-id-override": "test_broadcaster_id",
+        "active-stream-started-at-override": "2024-12-14T16:45:30",
+    }
+
+    with patch(
+        "src.viewers_leaderboard.webhook.routes.get_settings", return_value=settings
+    ):
+        response = test_client.post(
+            "/webhook",
+            json=payload.model_dump(),
+            headers=headers,
+        )
+
+    fetch_current_broadcaster_stream_mock.assert_not_awaited()
+
+    score = await Score.find_one()
+
+    assert response.status_code == 200
+    assert score.viewer_user_id == payload.event.chatter_user_id
+    assert score.viewer_username == payload.event.chatter_user_name
+    assert score.broadcaster_user_id == payload.event.broadcaster_user_id
+    assert score.value == 1
