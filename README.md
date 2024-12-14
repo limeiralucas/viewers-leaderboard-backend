@@ -10,7 +10,8 @@ If you want to just run the application together with the database, the project 
 docker-compose up
 ```
 
-After this, the application should be available on [http://localhost:8000](http://localhost:8000)
+After this, the application should be available on [http://localhost:8000](http://localhost:8000).
+But, if you want to install and run the application outside docker, just follow the next sections.
 
 
 ### Install Python (>= 3.11)
@@ -62,7 +63,7 @@ or
 pdm run uvicorn src.viewers_leaderboard.main:app --reload
 ```
 
-After this, the project can be accessed through [http://localhost:8000](http://localhost:8000)
+After this, the project can be accessed through [http://localhost:8000](http://localhost:8000).
 
 ### Application Swagger UI
 
