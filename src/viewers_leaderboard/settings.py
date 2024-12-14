@@ -10,6 +10,7 @@ def get_env_filename():
 
 class Settings(BaseSettings):
     app_name: str = "Viewers Leaderboard Backend"
+    twitch_signature_validation: bool = True
     env: str = "dev"
     app_client_id: str
     app_client_secret: str

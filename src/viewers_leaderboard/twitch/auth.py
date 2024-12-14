@@ -7,6 +7,9 @@ from src.viewers_leaderboard.settings import get_settings
 
 
 async def validate_webhook_request(request: Request) -> bool:
+    if get_settings().twitch_signature_validation is False:
+        return True
+
     try:
         expected_signature = await get_hmac_signature_from_request(request)
         header_signature = request.headers.get("twitch-eventsub-message-signature")
