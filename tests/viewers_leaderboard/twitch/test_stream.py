@@ -1,6 +1,6 @@
-import pytest
 from datetime import datetime
 from unittest.mock import patch, Mock, MagicMock, AsyncMock
+import pytest
 from twitchio import Stream
 from polyfactory.pytest_plugin import register_fixture
 from polyfactory.factories.pydantic_factory import ModelFactory
