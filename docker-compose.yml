@@ -1,0 +1,37 @@
+services:
+  app:
+    build: .
+    container_name: viewers_leaderboard_backend
+    ports:
+      - "8000:8000"
+    environment:
+      NAME: value
+      APP_NAME: "Viewers Leaderboard Backend"
+      TWITCH_SIGNATURE_VALIDATION: true
+      ENV: dev
+      APP_CLIENT_ID: client_id
+      APP_CLIENT_SECRET: cl13nt_s3cr3t
+      APP_ACCESS_TOKEN: access_token
+      WEBHOOK_SECRET: w3bh00k_s3cr3t
+      MONGO_CONN_STR: mongodb://db_username:db_pwd@mongo:27017/
+      MONGO_DB_NAME: viewers_leaderboard
+      PORT: 8000
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    container_name: viewers_leaderboard_db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: db_username
+      MONGO_INITDB_ROOT_PASSWORD: db_pwd
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

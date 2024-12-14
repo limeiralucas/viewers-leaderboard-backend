@@ -1,27 +1,26 @@
-ARG PYTHON_BASE=3.11-slim
-ARG PORT=8000
+ARG PYTHON_BASE=3.11.11-slim
 
-FROM python:${PYTHON_BASE} AS builder
+# Build stage
+FROM python:$PYTHON_BASE AS build
 
-# install PDM
-RUN pip install -U pdm
+COPY pyproject.toml pdm.lock README.md ./
 
-# disable PDM update check
-ENV PDM_CHECK_UPDATE=false
+# Install pdm
+RUN python -m pip install --upgrade pip setuptools wheel &&\
+    pip install pdm
 
-# copy files
-COPY pyproject.toml pdm.lock README.md /project/
-COPY src/ project/src
+# Install dependencies
+RUN pdm install --no-lock --no-editable
 
-# install dependencies
-WORKDIR /project
-RUN pdm install --check --prod --no-editable
+# Run stage
+FROM python:$PYTHON_BASE
 
-# run stage
-FROM python:${PYTHON_BASE}
+# Copy application files
+COPY src /src
 
-COPY --from=builder /project/.venv/ /project/.venv
-ENV PATH="/project/.venv/bin:$PATH"
+COPY --from=build /.venv /.venv
+ENV PATH="/.venv/bin:{$PATH}"
 
-COPY src /project/src
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "${PORT}"]
+EXPOSE $PORT
+
+CMD ["sh", "-c", "uvicorn src.viewers_leaderboard.main:app --host 0.0.0.0 --port $PORT"]
