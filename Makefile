@@ -1,7 +1,9 @@
+PORT ?= 8000
+
 setup:
 	pdm install
 dev:
-	pdm run uvicorn src.viewers_leaderboard.main:app --reload
+	pdm run uvicorn src.viewers_leaderboard.main:app --port $(PORT) --reload
 test:
 	pdm run pytest
 format:
