@@ -137,6 +137,7 @@ async def test_webhook_should_ignore_chat_message_if_stream_is_offline(
     assert response.status_code == 200
     assert score is None
 
+
 @patch(
     "src.viewers_leaderboard.webhook.routes.fetch_current_broadcaster_stream",
     return_value=None,

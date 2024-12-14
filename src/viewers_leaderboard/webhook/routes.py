@@ -1,6 +1,6 @@
 from datetime import datetime
 from pymongo import DESCENDING
-from fastapi import APIRouter, Depends 
+from fastapi import APIRouter, Depends
 from fastapi.responses import PlainTextResponse
 from src.viewers_leaderboard.webhook.transport import (
     WebhookPayload,
@@ -19,13 +19,14 @@ router = APIRouter()
 
 
 @router.post("/webhook")
-async def webhook(payload: WebhookPayload, _ = Depends(validate_webhook_request)):
+async def webhook(payload: WebhookPayload, _=Depends(validate_webhook_request)):
     if isinstance(payload, ChallengePayload):
         return PlainTextResponse(content=payload.challenge)
     elif isinstance(payload, ChatMessagePayload):
         await handle_chat_message_event(payload.event)
 
     return {"status": "ok"}
+
 
 @router.get("/ranking/{channel_id}")
 async def ranking(channel_id: str):
@@ -44,6 +45,7 @@ async def ranking(channel_id: str):
     result = await Score.aggregate(pipeline).to_list()
 
     return result
+
 
 async def handle_chat_message_event(event: ChatMessageEvent):
     broadcaster_username = event.broadcaster_user_name
