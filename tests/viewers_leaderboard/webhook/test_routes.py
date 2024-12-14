@@ -13,6 +13,7 @@ from src.viewers_leaderboard.webhook.transport import (
     ChatMessagePayload,
 )
 from src.viewers_leaderboard.ranking.models import Score
+from src.viewers_leaderboard.twitch.models import TwitchStream
 from src.viewers_leaderboard.twitch.auth import validate_webhook_request
 
 
@@ -30,6 +31,10 @@ class ChallengePayloadFactory(ModelFactory[ChallengePayload]): ...
 
 @register_fixture
 class ChatMessagePayloadFactory(ModelFactory[ChatMessagePayload]): ...
+
+
+@register_fixture
+class TwitchStreamFactory(ModelFactory[TwitchStream]): ...
 
 
 def test_webhook_endpoint_should_answer_challenge(
@@ -51,9 +56,10 @@ def test_webhook_endpoint_should_answer_challenge(
 
 async def test_webhook_should_create_score_for_chat_if_doesnt_exist(
     chat_message_payload_factory: ChatMessagePayloadFactory,
-    stream_mock: Stream,
+    twitch_stream_factory: TwitchStreamFactory,
     test_client: TestClient,
 ):
+    stream_mock: TwitchStream = twitch_stream_factory.build()
     payload: ChatMessagePayload = chat_message_payload_factory.build()
 
     with patch(
@@ -79,7 +85,7 @@ async def test_webhook_should_increment_score_for_chat_with_5_min_between_msgs(
     elapsed_seconds: int,
     expected_score: int,
     chat_message_payload_factory: ChatMessagePayloadFactory,
-    stream_mock: Stream,
+    twitch_stream_factory: TwitchStreamFactory,
     test_client: TestClient,
 ):
     def receive_score():
@@ -88,6 +94,7 @@ async def test_webhook_should_increment_score_for_chat_with_5_min_between_msgs(
             json=payload.model_dump(),
         )
 
+    stream_mock: TwitchStream = twitch_stream_factory.build()
     payload: ChatMessagePayload = chat_message_payload_factory.build()
 
     with patch(
