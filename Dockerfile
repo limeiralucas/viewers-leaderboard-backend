@@ -1,4 +1,5 @@
 ARG PYTHON_BASE=3.11-slim
+ARG PORT=8000
 
 FROM python:${PYTHON_BASE} AS builder
 
@@ -23,4 +24,4 @@ COPY --from=builder /project/.venv/ /project/.venv
 ENV PATH="/project/.venv/bin:$PATH"
 
 COPY src /project/src
-CMD ["make", "dev"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "${PORT}"]
