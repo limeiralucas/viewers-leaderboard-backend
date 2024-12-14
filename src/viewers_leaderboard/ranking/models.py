@@ -12,7 +12,6 @@ class Score(Document, TimestampMixin):
     viewer_user_id: str
     viewer_username: str
     broadcaster_user_id: str
-    broadcaster_username: str
     type: ScoreType
     last_stream_hash: str
     value: int = 0

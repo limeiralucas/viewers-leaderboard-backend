@@ -28,7 +28,6 @@ async def webhook(payload: WebhookPayload, _=Depends(validate_webhook_request)):
 
 
 async def handle_chat_message_event(event: ChatMessageEvent):
-    broadcaster_username = event.broadcaster_user_name
     broadcaster_user_id = event.broadcaster_user_id
     viewer_username = event.chatter_user_name
     viewer_user_id = event.chatter_user_id
@@ -51,7 +50,6 @@ async def handle_chat_message_event(event: ChatMessageEvent):
         score = await Score(
             viewer_username=viewer_username,
             viewer_user_id=viewer_user_id,
-            broadcaster_username=broadcaster_username,
             broadcaster_user_id=broadcaster_user_id,
             type=ScoreType.CHAT,
             last_stream_hash=stream_hash,

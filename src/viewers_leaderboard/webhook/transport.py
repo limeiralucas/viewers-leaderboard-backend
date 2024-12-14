@@ -1,16 +1,9 @@
 from typing import Union, Literal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class WebhookSubscription(BaseModel):
-    id: str
     type: str
-    status: str
-    version: str
-    cost: int
-    condition: dict[str, str]
-    created_at: str
-    transport: dict[str, str] = Field(default_factory=dict)
 
 
 class ChatMessageWebhookSubscription(WebhookSubscription):
@@ -23,7 +16,6 @@ class BaseWebhookPayload(BaseModel):
 
 class ChatMessageEvent(BaseModel):
     broadcaster_user_id: str
-    broadcaster_user_name: str
     chatter_user_id: str
     chatter_user_name: str
 
