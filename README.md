@@ -23,6 +23,23 @@ or
 pdm install
 ```
 
+### Set environment variables
+Some environment variables need to be set before running the application. You can create your own `.env` file or create a copy of `.env.example` and make the necessary changes,
+
+```
+# .env
+
+env="dev"
+app_name="Viewers Leaderboard Backend"
+twitch_signature_validation=true
+app_client_id="client_id"
+app_client_secret="cl13nt_s3cr3t"
+app_access_token="access_token"
+webhook_secret="w3bh00k_s3cr3t"
+mongo_conn_str="mongodb+srv://username:password@url.com/"
+mongo_db_name="viewers_leaderboard"
+```
+
 ### Run locally
 After installing all dependencies, the project is ready to run. Again, you can use the provided make command or do it manually through PDM.
 
@@ -36,11 +53,23 @@ pdm run uvicorn src.viewers_leaderboard.main:app --reload
 
 After this, the project can be accessed through [http://localhost:8000]([http://localhost:8000])
 
-## Application Swagger UI
+### Application Swagger UI
 
 The project includes a swagger page that can be accessed through the [/docs](http://localhost:8000/docs) path. There you can find information about the endpoints and can also test requests.
 
-## Optional configuration and commands
+## Other configuration and commands
+
+### Running tests
+
+The project uses [pytest](https://docs.pytest.org/en/stable/) to run the tests. You do so using the make command or manually using `pytest`:
+
+```
+make test
+```
+or
+```
+pdm run pytest
+```
 
 ### Disabling Twitch webhook signature validation (for testing purposes)
 
