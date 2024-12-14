@@ -2,6 +2,17 @@
 A Twitch extension that shows a leaderboard of viewers
 
 ## How to setup the project
+### docker-compose option
+
+If you want to just run the application together with the database, the project provides a `docker-compose.yml` file to allow running it with docker. To do this, make sure you have `docker` and `docker-compose` installed and just use the command:
+
+```shell
+docker-compose up
+```
+
+After this, the application should be available on [http://localhost:8000]([http://localhost:8000])
+
+
 ### Install Python (>= 3.11)
 This project uses Python 3.11, so make sure you have it installed. You can download the necessary version from [Python's official website](https://www.python.org/downloads/) or install it using your preferred method.
 
