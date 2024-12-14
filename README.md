@@ -36,7 +36,38 @@ pdm run uvicorn src.viewers_leaderboard.main:app --reload
 
 After this, the project can be accessed through [http://localhost:8000]([http://localhost:8000])
 
+## Application Swagger UI
+
+The project includes a swagger page that can be accessed through the [/docs](http://localhost:8000/docs) path. There you can find information about the endpoints and can also test requests.
+
 ## Optional configuration and commands
+
+### Disabling Twitch webhook signature validation (for testing purposes)
+
+By default, the application validates requests from Twitch using the `twitch-eventsub-message-signature` header. If you to do local testing without connecting directly to Twitch, you can do so using a enviroment variable:
+
+```shell
+export TWITCH_SIGNATURE_VALIDATION=false
+```
+
+> [!CAUTION]
+> Disabling this validation can create a security issue for the application.
+
+### Overriding the active livestream check
+By default, after receiving a request from Twitch, the application check if there's a active livestream for that given broadcaster and uses its start timestamp to create specific validations (preventing multiple points before time gap, duplicated points for joining stream, etc). To bypass this check, you can use special headers in the request:
+
+```
+# Stream broadcaster id
+active-stream-broadcaster-id-override
+
+# Stream start timestamp
+active-stream-started-at-override
+```
+
+The information about those header can also be found in the [/docs](http://localhost:8080) page when running the project.
+
+> [!NOTE]
+> This only works for `dev` environment. For other environments, this override is disabled.
 
 ### Defining project port
 If you want to run the project on a specific port, you just need to specify the `--port` param when running manually, or just set the `PORT` environment variable when using the make command.
