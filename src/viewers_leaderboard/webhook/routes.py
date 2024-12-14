@@ -1,5 +1,4 @@
 from datetime import datetime
-from pymongo import DESCENDING
 from fastapi import APIRouter, Depends
 from fastapi.responses import PlainTextResponse
 from src.viewers_leaderboard.webhook.transport import (
@@ -26,25 +25,6 @@ async def webhook(payload: WebhookPayload, _=Depends(validate_webhook_request)):
         await handle_chat_message_event(payload.event)
 
     return {"status": "ok"}
-
-
-@router.get("/ranking/{channel_id}")
-async def ranking(channel_id: str):
-    pipeline = [
-        {"$match": {"broadcaster_user_id": channel_id}},
-        {
-            "$group": {
-                "_id": "$viewer_username",
-                "total_score": {"$sum": "$value"},
-            }
-        },
-        {"$sort": {"total_score": DESCENDING}},
-        {"$project": {"_id": 0, "username": "$_id", "score": "$total_score"}},
-    ]
-
-    result = await Score.aggregate(pipeline).to_list()
-
-    return result
 
 
 async def handle_chat_message_event(event: ChatMessageEvent):
