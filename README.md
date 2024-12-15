@@ -10,22 +10,22 @@ If you want to just run the application together with the database, the project 
 docker-compose up
 ```
 
-After this, the application should be available on [http://localhost:8000](http://localhost:8000).
-But, if you want to install and run the application outside docker, just follow the next sections.
+After this, the application should be available at [http://localhost:8000](http://localhost:8000).
+However, if you want to install and run the application outside docker, just follow the next sections.
 
 
 ### Install Python (>= 3.11)
 This project uses Python 3.11, so make sure you have it installed. You can download the necessary version from [Python's official website](https://www.python.org/downloads/) or install it using your preferred method.
 
 ### Install pdm
-The project dependencies is managed using [PDM](https://pdm-project.org/en/latest/). To install it, just open the terminal and execute the following command:
+Project dependencies are managed using [PDM](https://pdm-project.org/en/latest/). To install it, just open the terminal and execute the following command:
 
 ```shell
 pip install -U pdm
 ```
 
 ## Install dependencies
-After installing PDM, the next step is install the project dependencies. You can either use the provided make (if you have it installed) or just execute PDM manually.
+After installing PDM, the next step is to install the project dependencies. You can either use the provided make command (if you have it installed) or just execute PDM manually.
 
 ```shell
 make setup
@@ -36,7 +36,7 @@ pdm install
 ```
 
 ### Set environment variables
-Some environment variables need to be set before running the application. You can create your own `.env` file or create a copy of `.env.example` and make the necessary changes,
+Some environment variables need to be set before running the application. You can create your own `.env` file or create a copy of `.env.example` and make the necessary changes.
 
 ```
 # .env
@@ -53,7 +53,7 @@ mongo_db_name="viewers_leaderboard"
 ```
 
 ### Run locally
-After installing all dependencies, the project is ready to run. Again, you can use the provided make command or do it manually through PDM.
+After installing all dependencies, the project is ready to run. Again, you can use the provided make command or do it manually with PDM.
 
 ```shell
 make dev
@@ -63,7 +63,7 @@ or
 pdm run uvicorn src.viewers_leaderboard.main:app --reload
 ```
 
-After this, the project can be accessed through [http://localhost:8000](http://localhost:8000).
+After this, the application can be accessed at [http://localhost:8000](http://localhost:8000).
 
 ### Application Swagger UI
 
@@ -73,7 +73,7 @@ The project includes a swagger page that can be accessed through the [/docs](htt
 
 ### Running tests
 
-The project uses [pytest](https://docs.pytest.org/en/stable/) to run the tests. You do so using the make command or manually using `pytest`:
+The project uses [pytest](https://docs.pytest.org/en/stable/) to run the tests. You can do so using the make command or manually using `pytest`:
 
 ```
 make test
