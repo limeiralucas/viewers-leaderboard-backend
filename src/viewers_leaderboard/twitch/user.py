@@ -14,10 +14,12 @@ async def get_user(username: str):
 
         if len(users) == 1:
             user = users[0]
-            print(user)
+
             return TwitchUser(
                 id=str(user.id), username=user.name, profile_image=user.profile_image
             )
+
+        raise UserNotFoundException(f"User {username} not found")
     except (HTTPException, AuthenticationError) as ex:
         logger.error(f"Error fetching user {username}: {ex}")
-        raise UserNotFoundException() from ex
+        raise UserNotFoundException(f"User {username} not found") from ex
