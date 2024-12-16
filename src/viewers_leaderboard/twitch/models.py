@@ -12,3 +12,9 @@ class TwitchStream(BaseModel):
         return TwitchStream(
             broadcaster_id=str(stream.user.id), started_at=stream.started_at
         )
+
+
+class TwitchUser(BaseModel):
+    id: str
+    username: str
+    profile_image: str
