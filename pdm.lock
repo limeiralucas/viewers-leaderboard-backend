@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:69aa960c3d9b92e244401012684aefc3b43476a0d875b69faa01ba6c96810bb2"
+content_hash = "sha256:3b21d137fc7acec6a3bb8b0a9b42e84efe40f5eb7ce11948275599df87cb19fc"
 
 [[metadata.targets]]
 requires_python = "==3.11.*"
@@ -178,7 +178,7 @@ name = "certifi"
 version = "2024.8.30"
 requires_python = ">=3.6"
 summary = "Python package for providing Mozilla's CA Bundle."
-groups = ["dev"]
+groups = ["default", "dev"]
 files = [
     {file = "certifi-2024.8.30-py3-none-any.whl", hash = "sha256:922820b53db7a7257ffbda3f597266d435245903d80737e34f8a45ff3e3230d8"},
     {file = "certifi-2024.8.30.tar.gz", hash = "sha256:bec941d2aa8195e248a60b31ff9f0558284cf01a52591ceda73ea9afffd69fd9"},
@@ -312,7 +312,7 @@ name = "httpcore"
 version = "1.0.7"
 requires_python = ">=3.8"
 summary = "A minimal low-level HTTP client."
-groups = ["dev"]
+groups = ["default", "dev"]
 dependencies = [
     "certifi",
     "h11<0.15,>=0.13",
@@ -327,7 +327,7 @@ name = "httpx"
 version = "0.28.1"
 requires_python = ">=3.8"
 summary = "The next generation HTTP client."
-groups = ["dev"]
+groups = ["default", "dev"]
 dependencies = [
     "anyio",
     "certifi",

@@ -1,9 +1,11 @@
 import hmac
 from hashlib import sha256
+import httpx
 from fastapi import Request
 from fastapi.exceptions import HTTPException
 from src.viewers_leaderboard.log import logger
 from src.viewers_leaderboard.settings import get_settings
+from src.viewers_leaderboard.twitch.transport import AuthUserTokenResponse
 
 
 async def validate_webhook_request(request: Request) -> bool:
@@ -38,3 +40,23 @@ async def get_hmac_data_from_request(request: Request):
     message_timestamp: str = request.headers.get("twitch-eventsub-message-timestamp")
 
     return message_id + message_timestamp + body.decode()
+
+async def get_user_access_token(code: str, base_url: str):
+    async with httpx.AsyncClient() as http_client:
+        settings = get_settings()
+        data = {
+            "client_id": settings.app_client_id,
+            "client_secret": settings.app_client_secret,
+            "code": code,
+            "grant_type": "authorization_code",
+            "redirect_uri": f"{base_url}webhook_subscribe_callback",
+        }
+        response = await http_client.post(
+            "https://id.twitch.tv/oauth2/token",
+            data=data,
+        )
+
+        print(response.text)
+        response.raise_for_status()
+
+        return AuthUserTokenResponse.model_validate(response.json())

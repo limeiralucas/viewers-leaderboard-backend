@@ -1,6 +1,6 @@
 from datetime import datetime
-from fastapi import APIRouter, Depends
-from fastapi.responses import PlainTextResponse
+from fastapi import APIRouter, Depends, Request, status
+from fastapi.responses import PlainTextResponse, RedirectResponse
 from src.viewers_leaderboard.settings import get_settings
 from src.viewers_leaderboard.webhook.transport import (
     WebhookPayload,
@@ -18,6 +18,8 @@ from src.viewers_leaderboard.twitch.auth import validate_webhook_request
 from src.viewers_leaderboard.webhook.transport import (
     parse_active_stream_override_header,
 )
+from src.viewers_leaderboard.twitch.auth import get_user_access_token
+from src.viewers_leaderboard.twitch.eventsub import subscribe_to_webhooks
 
 router = APIRouter()
 
@@ -36,6 +38,31 @@ async def webhook(
         await handle_chat_message_event(payload.event, active_stream_override)
 
     return {"status": "ok"}
+
+
+@router.get("/webhook_subscribe")
+async def webhook_subscribe(request: Request):
+    settings = get_settings()
+    twitch_base_url = "https://id.twitch.tv/oauth2/authorize"
+    params = {
+        "client_id": settings.app_client_id,
+        "response_type": "code",
+        "scopes": "channel:bot user:read:chat",
+        "redirect_uri": f"{request.base_url}webhook_subscribe_callback"
+    }
+    query = "&".join([f"{field}={value}" for field, value in params.items()])
+
+    oauth_url = f"{twitch_base_url}?{query}"
+
+    return RedirectResponse(oauth_url, status_code=status.HTTP_303_SEE_OTHER)
+
+@router.get("/webhook_subscribe_callback")
+async def webhook_subscribe_callback(code: str, request: Request):
+    token_response = await get_user_access_token(code, request.base_url)
+
+    await subscribe_to_webhooks(token_response.access_token)
+
+    return PlainTextResponse("Application authorized!")
 
 
 async def handle_chat_message_event(
