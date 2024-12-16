@@ -10,11 +10,11 @@ def get_env_filename():
 
 class Settings(BaseSettings):
     app_name: str = "Viewers Leaderboard Backend"
-    twitch_signature_validation: bool = True
     env: str = "prod"
+    twitch_signature_validation: bool = True
+    app_base_url: str
     app_client_id: str
     app_client_secret: str
-    app_access_token: str
     webhook_secret: str
     mongo_conn_str: str
     mongo_db_name: str

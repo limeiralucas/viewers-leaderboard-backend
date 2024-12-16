@@ -1,11 +1,16 @@
 import hmac
 from hashlib import sha256
-import httpx
+from httpx import AsyncClient
+from cachetools import TTLCache, cached
 from fastapi import Request
 from fastapi.exceptions import HTTPException
 from src.viewers_leaderboard.log import logger
 from src.viewers_leaderboard.settings import get_settings
-from src.viewers_leaderboard.twitch.transport import AuthUserTokenResponse
+from src.viewers_leaderboard.twitch.transport import (
+    AuthUserTokenResponse,
+    TokenValidationResponse,
+    AppTokenResponse,
+)
 
 
 async def validate_webhook_request(request: Request) -> bool:
@@ -18,7 +23,7 @@ async def validate_webhook_request(request: Request) -> bool:
 
         if header_signature == expected_signature:
             return True
-    except TypeError as ex:
+    except (TypeError, AttributeError) as ex:
         logger.error(f"Error validating webhook request: {ex}")
 
     raise HTTPException(status_code=403, detail="Invalid signature")
@@ -41,22 +46,54 @@ async def get_hmac_data_from_request(request: Request):
 
     return message_id + message_timestamp + body.decode()
 
-async def get_user_access_token(code: str, base_url: str):
-    async with httpx.AsyncClient() as http_client:
-        settings = get_settings()
+
+async def get_user_access_token(code: str):
+    settings = get_settings()
+    async with AsyncClient() as http_client:
         data = {
             "client_id": settings.app_client_id,
             "client_secret": settings.app_client_secret,
             "code": code,
             "grant_type": "authorization_code",
-            "redirect_uri": f"{base_url}webhook_subscribe_callback",
+            "redirect_uri": f"{settings.app_base_url}/webhook_subscribe_callback",
         }
         response = await http_client.post(
             "https://id.twitch.tv/oauth2/token",
-            data=data,
+            json=data,
         )
 
-        print(response.text)
         response.raise_for_status()
 
         return AuthUserTokenResponse.model_validate(response.json())
+
+
+async def validate_user_token(token: str):
+    async with AsyncClient() as http_client:
+        response = await http_client.get(
+            "https://id.twitch.tv/oauth2/validate",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+        response.raise_for_status()
+
+        return TokenValidationResponse.model_validate(response.json())
+
+
+@cached(cache=TTLCache(maxsize=1, ttl=3600))
+async def get_app_token():
+    settings = get_settings()
+    data = {
+        "client_id": settings.app_client_id,
+        "client_secret": settings.app_client_secret,
+        "grant_type": "client_credentials",
+    }
+
+    async with AsyncClient() as http_client:
+        response = await http_client.post(
+            "https://id.twitch.tv/oauth2/token",
+            json=data,
+        )
+
+    response.raise_for_status()
+
+    return AppTokenResponse.model_validate(response.json())
