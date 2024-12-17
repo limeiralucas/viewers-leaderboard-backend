@@ -11,7 +11,7 @@ services:
       ENV: dev
       APP_CLIENT_ID: client_id
       APP_CLIENT_SECRET: cl13nt_s3cr3t
-      APP_ACCESS_TOKEN: access_token
+      APP_BASE_URL: http://localhost:8000
       WEBHOOK_SECRET: w3bh00k_s3cr3t
       MONGO_CONN_STR: mongodb://db_username:db_pwd@mongo:27017/
       MONGO_DB_NAME: viewers_leaderboard
